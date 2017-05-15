@@ -75,23 +75,25 @@ while($is->connected()) {
     if ($retval == 1) {
         #print Dumper( \%packetdata );
         if ($packetdata{"type"} eq "location") {
-            if (substr($packetdata{"comment"}, 0, 2) eq "id") {
-                $hex = substr($packetdata{"srccallsign"}, 3);
-                my $table_name = strftime "data%Y%m%d", localtime;
+            if(exists($packetdata{"comment"})) {
+              if (substr($packetdata{"comment"}, 0, 2) eq "id") {
+                  $hex = substr($packetdata{"srccallsign"}, 3);
+                  my $table_name = strftime "data%Y%m%d", localtime;
 
-                try {
-                    $db->do("INSERT INTO ". $table_name ." (thetime, alt, loc, hex, type, speed, course) VALUES (FROM_UNIXTIME(" . $packetdata{"timestamp"} . "), " . $packetdata{"altitude"} . ", POINT(".$packetdata{"latitude"}.",".$packetdata{"longitude"}."1), '".$hex."', 1, ". $packetdata{"speed"} .", ". $packetdata{"course"} .");");
-                } catch {
-                    #if we get an error, todays table might not exist
-                    my $sql_date = strftime "%Y-%m-%d", localtime;
-                    $db->do("CREATE TABLE IF NOT EXISTS ".$table_name. " " . $create_table_string);
+                  try {
+                      $db->do("INSERT INTO ". $table_name ." (thetime, alt, loc, hex, type, speed, course) VALUES (FROM_UNIXTIME(" . $packetdata{"timestamp"} . "), " . $packetdata{"altitude"} . ", POINT(".$packetdata{"latitude"}.",".$packetdata{"longitude"}."1), '".$hex."', 1, ". $packetdata{"speed"} .", ". $packetdata{"course"} .");");
+                  } catch {
+                      #if we get an error, todays table might not exist
+                      my $sql_date = strftime "%Y-%m-%d", localtime;
+                      $db->do("CREATE TABLE IF NOT EXISTS ".$table_name. " " . $create_table_string);
 
-                    # insert into days table
-                    $db->do("INSERT INTO days SET day_date='" . $sql_date . "';");
+                      # insert into days table
+                      $db->do("INSERT INTO days SET day_date='" . $sql_date . "';");
 
-                    # try inserting again
-                    $db->do("INSERT INTO ". $table_name ." (thetime, alt, loc, hex, type, speed, course) VALUES (FROM_UNIXTIME(" . $packetdata{"timestamp"} . "), " . $packetdata{"altitude"} . ", POINT(".$packetdata{"latitude"}.",".$packetdata{"longitude"}."1), '".$hex."', 1, ". $packetdata{"speed"} .", ". $packetdata{"course"} .");");
-                }
+                      # try inserting again
+                      $db->do("INSERT INTO ". $table_name ." (thetime, alt, loc, hex, type, speed, course) VALUES (FROM_UNIXTIME(" . $packetdata{"timestamp"} . "), " . $packetdata{"altitude"} . ", POINT(".$packetdata{"latitude"}.",".$packetdata{"longitude"}."1), '".$hex."', 1, ". $packetdata{"speed"} .", ". $packetdata{"course"} .");");
+                  }
+              }
             }
         }
         #print ".\n";
