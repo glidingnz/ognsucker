@@ -27,6 +27,7 @@ my $create_table_string = <<"TABLE_STRING";
   `speed` smallint(6) DEFAULT NULL,
   `course` smallint(6) DEFAULT NULL,
   `type` tinyint(4) DEFAULT NULL,
+  `rego` char(3) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `dateindex` (`thetime`),
   KEY `hexindex2` (`hex`,`thetime`),
