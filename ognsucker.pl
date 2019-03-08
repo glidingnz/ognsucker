@@ -113,7 +113,7 @@ sub ConnectToMySql {
 
 
 my $dsn = "DBI:mysql:ogn_data;localhost";
-my $dbh = DBI->connect($dsn, 'ogn', '65tq9by', { PrintError => 1, RaiseError => 1 });
+my $dbh = DBI->connect($dsn, 'ogn', 'password', { PrintError => 1, RaiseError => 1 });
 return $dbh;
 
 }
