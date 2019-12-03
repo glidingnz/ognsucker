@@ -32,6 +32,7 @@ my $create_table_string = <<"TABLE_STRING";
   PRIMARY KEY (`id`),
   KEY `dateindex` (`thetime`),
   KEY `hexindex2` (`hex`,`thetime`),
+  KEY `regohexindex` (`rego`,`hex`,`thetime`),
   SPATIAL KEY `loc` (`loc`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 TABLE_STRING
